@@ -45,6 +45,7 @@ public:
         set_age(age);
         cout << "HConstructer:\t" << this << endl;
     }
+
    virtual ~Human()
     {
         cout << "HDestructor:\t" << this << endl;
@@ -115,6 +116,7 @@ public:
         cout << "SDestructor:\t" << this << endl;       
     }
     //      Methods
+
     void info()const override // переопределить
     {
         Human::info();
