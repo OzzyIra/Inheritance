@@ -56,7 +56,16 @@ public:
     {
         cout << last_name << " " << first_name << " " << age << "y/o"<<endl;
     }
+   virtual std::ostream& info(std::ostream& os)const
+   {
+       return os << last_name << " " << first_name << " " << age << " y/o";
+   }
 };
+
+std::ostream& operator<<(std::ostream& os, const Human& obj)
+{
+    return obj.info(os);
+}
 
 #define STUDENT_TAKE_PARAMETERS const std::string& speciality, const std::string& group, double rating, double attendance
 #define STUDENT_GIVE_PARAMETERS speciality, group, rating, attendance
@@ -122,7 +131,12 @@ public:
         Human::info();
         cout << speciality << " " << group << " " << rating << " " << attendance << endl;
     }
-    
+    std::ostream& info(std::ostream& os)const override //переопределить
+    {
+        return Human::info(os) << " "
+            << speciality << " " << group << " " << rating << " " << attendance;
+    }
+
 
 };
 class Teacher :public Human
@@ -162,6 +176,10 @@ public:
    {
        Human::info();
        cout << speciality << " " << experience << " years" << endl;
+   }
+   std::ostream& info(std::ostream& os)const
+   {
+       return Human::info(os) << " " << speciality << " " << experience << " years" << endl;
    }
 
 };
@@ -204,14 +222,18 @@ public:
         Student::info();
         cout << them << " " << supervisor << endl;
     }
+    std::ostream& info(std::ostream& os)const override
+    {
+        return Student::info(os) << them << " " << supervisor << endl;
+    }
 };
 
-std::ostream& operator<<(std::ostream& os, const Human& tst)
-{
-    tst.info();
-    return os;
-}
-
+//std::ostream& operator<<(std::ostream& os, const Human& tst)
+//{
+//    tst.info();
+//    return os;
+//}
+//
 
 //#define INHERITANCE_CHECK
 void main()
