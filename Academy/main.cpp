@@ -1,6 +1,8 @@
 #include <iostream>
-
+#include<fstream>
+#include<string>
 using namespace std;
+
 #define delimiter "\n------------------------------------\n"
 
 #define HUMAN_TAKE_PARAMETERS const std::string& last_name, const std::string& first_name, unsigned int age
@@ -9,6 +11,11 @@ using namespace std;
 
 class Human
 {
+    static const int HUMAN_TYPE_WIDTH = 10;
+    static const int LAST_NAME_WIDTH = 15;
+    static const int FIRST_NAME_WIDTH = 15;
+    static const int AGE_NAME_WIDTH = 5;
+
     std::string last_name;
     std::string first_name;
     unsigned int age;
@@ -60,6 +67,16 @@ public:
    {
        return os << last_name << " " << first_name << " " << age << " y/o";
    }
+   virtual std::ofstream& info(std::ofstream& ofs)const
+   {
+       //ofs <<strchr(typeid(*this).name(), ' ')+ 1 << ":\t" << last_name << " " << first_name << " " << endl;
+       ofs.width(HUMAN_TYPE_WIDTH); ofs << left << std::string(strchr(typeid(*this).name(), ' ') + 1 ) + ":";
+       ofs.width(LAST_NAME_WIDTH); ofs << left << last_name;
+       ofs.width(FIRST_NAME_WIDTH); ofs<< left << first_name;
+       ofs.width(AGE_NAME_WIDTH); ofs  << age;
+
+       return ofs;
+   }
 };
 
 std::ostream& operator<<(std::ostream& os, const Human& obj)
@@ -67,10 +84,19 @@ std::ostream& operator<<(std::ostream& os, const Human& obj)
     return obj.info(os);
 }
 
+std::ofstream& operator<<(std::ofstream& ofs, const Human& obj)
+{
+    return obj.info(ofs);
+}
+
 #define STUDENT_TAKE_PARAMETERS const std::string& speciality, const std::string& group, double rating, double attendance
 #define STUDENT_GIVE_PARAMETERS speciality, group, rating, attendance
 class Student :public Human
 {
+    static const int SPECIALITI_WIDTH = 25;
+    static const int GROUP_WIDTH = 8;
+    static const int RATING_WIDTH = 8;
+    static const int ATTENDANCE_WIDTH = 8;
     std::string speciality;
     std::string group;
     double rating;
@@ -136,11 +162,23 @@ public:
         return Human::info(os) << " "
             << speciality << " " << group << " " << rating << " " << attendance;
     }
+     std::ofstream& info(std::ofstream& ofs)const override
+     {
+         Human::info(ofs) ;
+         ofs.width(SPECIALITI_WIDTH);    ofs << speciality ;
+         ofs.width(GROUP_WIDTH);    ofs << group ;
+         ofs.width(RATING_WIDTH);   ofs << rating ;
+         ofs.width(ATTENDANCE_WIDTH);    ofs << attendance;
+         return ofs;
+     }
+
 
 
 };
 class Teacher :public Human
 {
+    static const int SPECIALITY_WIDTH = 25;
+    static const int EXPERIENCE_WIDTH = 5;
     std::string speciality;
     unsigned experience;
 public:
@@ -179,13 +217,22 @@ public:
    }
    std::ostream& info(std::ostream& os)const
    {
-       return Human::info(os) << " " << speciality << " " << experience << " years" << endl;
+       return Human::info(os) << " " << speciality << " " << experience << " years";
+   }
+   std::ofstream& info(std::ofstream& ofs)const override
+   {
+       Human::info(ofs) ;
+       ofs.width(SPECIALITY_WIDTH);  ofs << speciality;
+       ofs.width(EXPERIENCE_WIDTH); ofs << experience;
+       return ofs;
    }
 
 };
 
 class Graduate :public Student
 {
+    static const int THEM_WIDTH = 32;
+    static const int SUPERVISOR_WIDTH = 32;
     std::string them;
     std::string supervisor;
 public:
@@ -224,9 +271,51 @@ public:
     }
     std::ostream& info(std::ostream& os)const override
     {
-        return Student::info(os) << them << " " << supervisor << endl;
+        return Student::info(os) << them << " " << supervisor;
     }
+    std::ofstream& info(std::ofstream& ofs)const override
+    {
+        Student::info(ofs) ;
+        ofs.width(THEM_WIDTH);   ofs << them ;
+        ofs.width(SUPERVISOR_WIDTH);    ofs << supervisor;
+        return ofs;
+    }
+
 };
+
+void Save(Human* group[], const int n, const std::string& filename)
+{
+    std::ofstream fout(filename);
+    for (int i = 0; i < n; i++)
+    {
+        //  group[i]->info();
+        fout << *group[i] << endl;
+    }
+    fout.close();
+    std::string cmd = "notepad " + filename;
+    system(cmd.c_str());    // возвращает содержимое объекта std::string в виде обычной C-string
+}
+
+void Print( Human* group[], const int n)
+{
+    cout << delimiter << endl;
+    for (int i = 0; i <n; i++)
+    {
+        //  group[i]->info();
+        cout << *group[i] << endl;
+        cout << delimiter << endl;
+    }
+
+
+}
+
+void Clear(Human* group[], const int n)
+{
+    for (int i = 0; i <n; i++)
+    {
+        delete group[i];
+    }
+}
 
 //std::ostream& operator<<(std::ostream& os, const Human& tst)
 //{
@@ -255,19 +344,12 @@ void main()
         new Student("Pinkman", "Jessie", 22, "Chemistry", "WW_220", 70, 97),
         new Teacher("White", "Walter", 50, "Chemistry", 25),
         new Student("Vercetty", "Tommy", 30, "Theft", "Vice", 97, 98),
-        new Graduate("Winchester","Sam",41,"Jurisprudence","1J",174,100,"Banking activity: financial and legal aspect.","John L. Henessy")
+        new Graduate("Winchester","Sam",41,"Jurisprudence","1J",174,100,"Banking activity: financial and legal aspect.","John L. Henessy"),
+        new Teacher("Diaz","Ricardo",50,"Weapons distribution",20)
     };
 
-    cout << delimiter << endl;
-    for (int i = 0; i < sizeof(group) / sizeof(group[0]); i++)
-    {
-      //  group[i]->info();
-        cout << *group[i] << endl;
-        cout << delimiter << endl;
-    }
-    
-    for (int i = 0; i < sizeof(group) / sizeof(group[0]); i++)
-    {
-       delete group[i];
-    }
+    Print(group, sizeof(group) / sizeof(group[0]));
+    Save(group, sizeof(group) / sizeof(group[0]), "Group.txt");
+    Clear(group, sizeof(group) / sizeof(group[0]));
+
 }
