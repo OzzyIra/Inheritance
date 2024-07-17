@@ -112,6 +112,7 @@ class Student :public Human
     double rating;
     double attendance;
 public:
+    
     const std::string& get_speciality()const
     {
         return speciality;
@@ -186,9 +187,6 @@ public:
          Human::read(ifs)>>speciality >> group >> rating >> attendance;
          return ifs;
      }
-
-
-
 };
 class Teacher :public Human
 {
@@ -237,13 +235,20 @@ public:
    std::ofstream& write(std::ofstream& ofs)const override
    {
        Human::write(ofs) ;
-       ofs.width(SPECIALITY_WIDTH);  ofs << speciality;
+       ofs.width(SPECIALITY_WIDTH);  ofs << speciality<<'.';
        ofs.width(EXPERIENCE_WIDTH); ofs << experience;
-       return ofs;
+       return ofs;//https://www.youtube.com/playlist?list=PLeqyOOqxeiIPt4Opfdrc50pI9PbPSjOaV
    }
    std::ifstream& read(std::ifstream& ifs)override
    {
-       Human::read(ifs)>>speciality>>experience;
+       Human::read(ifs);
+     /*  std::getline(ifs,speciality,'.');
+       ifs>>experience;*/
+       const int SIZE = SPECIALITY_WIDTH;
+       char buffer[SIZE]{};
+       ifs.read(buffer, SIZE);
+       this->speciality = buffer;
+       ifs >> experience;
        return ifs;
    }
 
@@ -295,7 +300,7 @@ public:
     }
     std::ofstream& write(std::ofstream& ofs)const override
     {
-        Student::info(ofs) ;
+        Student::write(ofs) ;
         ofs.width(THEM_WIDTH);   ofs << them ;
         ofs.width(SUPERVISOR_WIDTH);    ofs << supervisor;
         return ofs;
@@ -393,12 +398,6 @@ Human** Load(const std::string& filename, int& n)
 }
 
 
-//std::ostream& operator<<(std::ostream& os, const Human& tst)
-//{
-//    tst.info();
-//    return os;
-//}
-//
 
 //#define INHERITANCE_CHECK
 //#define POLYMORPHISM
@@ -431,8 +430,8 @@ void main()
     Clear(group, sizeof(group) / sizeof(group[0]));
 #endif // POLYMORPHISM
     int n = 0;
-    Human** group = Load("group.txt", n);
-    Print(group,n);
-    Clear(group,n);
+    Human** group2 = Load("group.txt", n);
+    Print(group2,n);
+    Clear(group2,n);
 
 }

@@ -1,5 +1,5 @@
 Student:  Pinkman        Jessie         22   Chemistry                WW_220  70      97      
-Teacher:  White          Walter         50   Chemistry                25   
+Teacher:  White          Walter         50   Chemistry                .25   
 Student:  Vercetty       Tommy          30   Theft                    Vice    97      98      
 Graduate: Winchester     Sam            41   Jurisprudence            1J      174     100     Banking activity: financial and legal aspect.John L. Henessy                 
-Teacher:  Diaz           Ricardo        50   Weapons distribution     20   
+Teacher:  Diaz           Ricardo        50   Weapons distribution     .20   
