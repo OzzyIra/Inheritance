@@ -201,7 +201,7 @@ namespace Geometry
     {
         double rad;
     public:
-        Circle(double rad, Color color) :Shape(SHAPE_GIVE_PARAMETERS)
+        Circle(double rad,SHAPE_TAKE_PARAMETERS) :Shape(SHAPE_GIVE_PARAMETERS)
         {
             set_rad(rad);
         }
@@ -234,7 +234,7 @@ namespace Geometry
             SelectObject(hdc, hPen);
             SelectObject(hdc, hBrush);
 
-            ::Ellipse(hdc, 400, 240, 470, 310);
+            ::Ellipse(hdc, start_x,start_y, start_x + rad, start_y + rad);
 
             DeleteObject(hPen);
             DeleteObject(hBrush);
@@ -255,9 +255,9 @@ namespace Geometry
 void main()
 {
     setlocale(LC_ALL, "Russian");
-    Geometry::Square square(50, 300, 50, 5, Geometry::Color::YELLOW);    square.info();
-   Geometry:: Rectangle rect(80, 200, 500, 50, 3, Geometry::Color::BLUE);
+    Geometry::Square square(50, 200, 50, 5, Geometry::Color::YELLOW);    square.info();
+   Geometry:: Rectangle rect(100, 80, 300, 50, 3, Geometry::Color::BLUE);
    rect.info();
-   Geometry::Circle circle(10, Geometry::Color::GREEN);
+   Geometry::Circle circle(20,150,30,3, Geometry::Color::GREEN);
    circle.info();
 }
